@@ -1,4 +1,4 @@
-#include <paranoid/uart.h>
+#include <paranoid/log.h>
 #include <paranoid/panic.h>
 #include <paranoid/string.h>
 
@@ -32,13 +32,16 @@ static void run_kernel_tests(void)
 
 void kernel_main(void)
 {
-    uart_puts("ParanoidOS booted.\n");
-    uart_puts("Security mode: paranoid learning build.\n");
-    uart_puts("Milestone 3: kernel string library loaded.\n");
+    log_info("ParanoidOS booted");
+    log_info("Security mode: paranoid learning build");
+    log_info("Milestone 4: kernel logger loaded");
 
     run_kernel_tests();
 
-    uart_puts("Kernel self-tests passed.\n");
+    log_info("Kernel self-tests passed");
+    log_warn("No scheduler loaded");
+    log_warn("No memory protection loaded");
+    log_warn("No userspace loaded");
 
     while (1)
     {

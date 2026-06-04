@@ -9,7 +9,7 @@ CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-onl
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
 all: $(BUILD_DIR)/kernel.img
