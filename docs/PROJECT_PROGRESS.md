@@ -431,3 +431,28 @@ Expected boot output now uses log levels:
 
 Commit:
 Add kernel logger
+
+
+
+## Milestone 5 completed
+
+Added number formatting support.
+
+New files:
+- include/paranoid/format.h
+- kernel/format.c
+
+New functions:
+- k_u64_to_dec()
+- k_u64_to_hex()
+- log_info_dec()
+- log_info_hex()
+
+The kernel can now print decimal values and full 64-bit hexadecimal values.
+
+Example output:
+[INFO] Example decimal value: 12345
+[INFO] Kernel load address: 0x0000000040080000
+
+Commit:
+Add number and hex formatting
