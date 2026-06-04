@@ -408,3 +408,26 @@ The assistant should:
 - Keep work emulator-first.
 - Avoid flashing instructions until explicitly ready and backed by checks.
 - Continue from Milestone 2 unless the repo state says otherwise.
+
+
+## Milestone 4 completed 
+
+Added a basic kernel logger.
+
+New files:
+- include/paranoid/log.h
+- kernel/log.c
+
+New functions:
+- log_info()
+- log_warn()
+- log_error()
+- log_panic()
+
+main.c now uses the logger instead of calling uart_puts() directly.
+
+Expected boot output now uses log levels:
+[INFO], [WARN], [ERROR], [PANIC]
+
+Commit:
+Add kernel logger
