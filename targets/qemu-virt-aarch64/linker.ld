@@ -22,15 +22,18 @@ SECTIONS
         *(.data*)
     }
 
+    . = ALIGN(8);
     __bss_start = .;
 
-    .bss :
+    .bss (NOLOAD) :
     {
         *(.bss*)
         *(COMMON)
+        . = ALIGN(8);
     }
 
     __bss_end = .;
 
+    . = ALIGN(8);
     __kernel_end = .;
 }
