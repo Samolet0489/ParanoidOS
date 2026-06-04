@@ -1,0 +1,19 @@
+#include <paranoid/cpu.h>
+
+u64 cpu_current_el(void)
+{
+    u64 value;
+
+    __asm__ volatile("mrs %0, CurrentEL" : "=r"(value));
+
+    return (value >> 2) & 0x3;
+}
+
+u64 cpu_mpidr(void)
+{
+    u64 value;
+
+    __asm__ volatile("mrs %0, MPIDR_EL1" : "=r"(value));
+
+    return value;
+}

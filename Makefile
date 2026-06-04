@@ -12,6 +12,9 @@ TARGET_DIR = targets/qemu-virt-aarch64
 KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
+ARCH_C = arch/aarch64/cpu.c
+ARCH_OBJS = $(patsubst arch/aarch64/%.c,$(BUILD_DIR)/aarch64_%.o,$(ARCH_C))
+
 all: $(BUILD_DIR)/kernel.img
 
 $(BUILD_DIR):
@@ -23,8 +26,11 @@ $(BUILD_DIR)/boot.o: boot/boot.S | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: kernel/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/kernel.elf: $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(TARGET_DIR)/linker.ld
-	$(LD) -T $(TARGET_DIR)/linker.ld $(BUILD_DIR)/boot.o $(KERNEL_OBJS) -o $(BUILD_DIR)/kernel.elf
+$(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/kernel.elf: $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(ARCH_OBJS) $(TARGET_DIR)/linker.ld
+	$(LD) -T $(TARGET_DIR)/linker.ld $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(ARCH_OBJS) -o $(BUILD_DIR)/kernel.elf
 
 $(BUILD_DIR)/kernel.img: $(BUILD_DIR)/kernel.elf
 	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel.elf $(BUILD_DIR)/kernel.img

@@ -2,6 +2,12 @@
 #include <paranoid/panic.h>
 #include <paranoid/string.h>
 #include <paranoid/format.h>
+#include <paranoid/cpu.h>
+
+extern char __kernel_start[];
+extern char __kernel_end[];
+extern char __bss_start[];
+extern char __bss_end[];
 
 static void run_kernel_tests(void)
 {
@@ -47,18 +53,31 @@ static void run_kernel_tests(void)
     }
 }
 
+static void print_boot_info(void)
+{
+    u64 current_el = cpu_current_el();
+    u64 mpidr = cpu_mpidr();
+
+    log_info_dec("Current exception level", current_el);
+    log_info_hex("CPU MPIDR register", mpidr);
+
+    log_info_hex("Kernel start address", (u64)__kernel_start);
+    log_info_hex("Kernel end address", (u64)__kernel_end);
+    log_info_hex("BSS start address", (u64)__bss_start);
+    log_info_hex("BSS end address", (u64)__bss_end);
+}
+
 void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 5: number formatting loaded");
+    log_info("Milestone 6: CPU and boot information loaded");
 
     run_kernel_tests();
 
     log_info("Kernel self-tests passed");
 
-    log_info_dec("Example decimal value", 12345);
-    log_info_hex("Kernel load address", 0x40080000);
+    print_boot_info();
 
     log_warn("No scheduler loaded");
     log_warn("No memory protection loaded");
