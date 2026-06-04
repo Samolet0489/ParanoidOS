@@ -456,3 +456,32 @@ Example output:
 
 Commit:
 Add number and hex formatting
+
+
+## Milestone 6 completed
+
+Added CPU and boot information logging.
+
+New files:
+- include/paranoid/cpu.h
+- arch/aarch64/cpu.c
+
+Updated files:
+- targets/qemu-virt-aarch64/linker.ld
+- Makefile
+- kernel/main.c
+
+New functions:
+- cpu_current_el()
+- cpu_mpidr()
+
+New linker symbols:
+- __kernel_start
+- __kernel_end
+- __bss_start
+- __bss_end
+
+The kernel can now print basic ARM64 boot information, including the current exception level, MPIDR register, and kernel memory region addresses.
+
+Commit:
+Add CPU and boot information logging
