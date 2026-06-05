@@ -544,3 +544,31 @@ Expected BRK result:
 
 Commit:
 Decode ESR exception information
+
+
+## Milestone 10 completed
+
+Separated kernel ELF load segments to remove RWX permissions.
+
+Updated files:
+- targets/qemu-virt-aarch64/linker.ld
+- Makefile
+- kernel/main.c
+
+New behavior:
+- Linker script now defines PHDRS for text, rodata, and data segments
+- .text is mapped Read + Execute
+- .rodata is mapped Read only
+- .data and .bss are mapped Read + Write
+- The previous RWX linker warning is removed
+- Compiler flags were improved for freestanding kernel development
+
+Verification commands:
+- aarch64-linux-gnu-readelf -l build/kernel.elf
+- aarch64-linux-gnu-nm -n build/kernel.elf | grep -E "__kernel|__bss|_start|exception_vector_table|stack"
+
+Expected result:
+- No LOAD segment should have RWE permissions
+
+Commit:
+Separate kernel ELF segments
