@@ -1,3 +1,4 @@
+#include <paranoid/security.h>
 #include <paranoid/log.h>
 #include <paranoid/cmdline.h>
 #include <paranoid/panic.h>
@@ -97,7 +98,7 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 18: kernel command line placeholder loaded");
+    log_info("Milestone 19: security profiles loaded");
 
     boot_phase_print();
 
@@ -106,6 +107,10 @@ void kernel_main(void)
 
     boot_phase_set("command line");
     cmdline_print_info();
+
+    boot_phase_set("security profile");
+    security_init();
+    security_print_info();
 
     boot_phase_set("boot configuration");
     config_print_info();
