@@ -703,3 +703,35 @@ ParanoidOS now has explicit boot-time feature flags. Features are disabled by de
 
 Commit:
 Add boot configuration flags
+
+## Milestone 15 completed
+
+Added panic-on-warning policy.
+
+Updated files:
+- Makefile
+- kernel/log.c
+- kernel/main.c
+
+New behavior:
+- log_warn() now checks config_panic_on_warn_enabled()
+- If PARANOID_CONFIG_PANIC_ON_WARN=1, warnings become fatal
+- Default behavior keeps warnings non-fatal
+- Makefile config flags can now be overridden from the command line
+
+Useful commands:
+- make run
+- make PANIC_ON_WARN=1 run
+
+Default configuration:
+- PANIC_ON_WARN=0
+
+Tested behavior:
+- Normal mode prints warnings and continues
+- Panic-on-warning mode panics on the first warning
+
+Security purpose:
+This is the first real paranoid policy mode. The kernel can now be configured to treat suspicious warning conditions as fatal instead of continuing silently.
+
+Commit:
+Add panic on warning policy
