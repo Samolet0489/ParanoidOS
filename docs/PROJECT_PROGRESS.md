@@ -1166,3 +1166,45 @@ Panic output now gives useful low-level context immediately, making future crash
 
 Commit:
 Improve panic output context
+
+## Milestone 26 completed
+
+Added an interactive kernel shell over QEMU UART.
+
+New files:
+- include/paranoid/shell.h
+- kernel/shell.c
+
+Updated files:
+- include/paranoid/uart.h
+- kernel/uart.c
+- kernel/boot.c
+- Makefile
+
+New behavior:
+- UART now supports input
+- Kernel enters an interactive shell after boot checks
+- Shell prompt: paranoid>
+- Shell supports commands:
+  - help
+  - cpu
+  - stack
+  - layout
+  - build
+  - config
+  - security
+  - phase
+  - checks
+  - panic
+  - clear
+- panic command triggers improved panic output
+- Boot phase changes to shell
+
+Version:
+- 0.1.0
+
+Purpose:
+This is the first visible interactive OS-like feature. ParanoidOS no longer only boots and idles; it can receive commands and print live kernel information.
+
+Commit:
+Add interactive kernel shell
