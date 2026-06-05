@@ -10,25 +10,17 @@
 #include <paranoid/security.h>
 #include <paranoid/security_policy.h>
 #include <paranoid/selftest.h>
+#include <paranoid/kernel_layout.h>
 #include <paranoid/types.h>
 
-extern char __kernel_start;
-extern char __kernel_end;
-extern char __bss_start;
-extern char __bss_end;
-
-static void print_boot_info(void)
+static void print_cpu_info(void)
 {
     u64 current_el = cpu_current_el();
     u64 mpidr = cpu_mpidr();
 
+    log_info("CPU information");
     log_info_dec("Current exception level", current_el);
     log_info_hex("CPU MPIDR register", mpidr);
-
-    log_info_hex("Kernel start address", (u64)&__kernel_start);
-    log_info_hex("Kernel end address", (u64)&__kernel_end);
-    log_info_hex("BSS start address", (u64)&__bss_start);
-    log_info_hex("BSS end address", (u64)&__bss_end);
 }
 
 void kernel_main(void)
@@ -37,7 +29,7 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 21: self-test module cleanup loaded");
+    log_info("Milestone 22: kernel layout module cleanup loaded");
 
     boot_phase_print();
 
@@ -86,7 +78,8 @@ void kernel_main(void)
     log_info("Exception handling initialized");
 
     boot_phase_set("boot info");
-    print_boot_info();
+    print_cpu_info();
+    kernel_layout_print_info();
 
     boot_phase_set("boot checks");
     boot_check_run_all();
