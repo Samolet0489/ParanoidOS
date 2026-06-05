@@ -4,6 +4,7 @@
 #include <paranoid/format.h>
 #include <paranoid/cpu.h>
 #include <paranoid/exception.h>
+#include <paranoid/stack.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -89,19 +90,21 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 10: kernel sections separated");
+    log_info("Milestone 11: basic stack guard loaded");
 
     run_kernel_tests();
 
     log_info("Kernel self-tests passed");
     log_info("BSS section cleared successfully");
 
+    stack_init_guard();
+    stack_check_guard();
+    log_info("Stack guard initialized");
+
+    stack_print_info();
+
     exception_init();
     log_info("Exception handling initialized");
-
-    // Panic test
-    //log_warn("Triggering test exception");
-    //exception_trigger_test();
 
     print_boot_info();
 

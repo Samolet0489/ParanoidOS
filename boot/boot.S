@@ -1,5 +1,7 @@
 .section .text.boot
 .global _start
+.global stack_bottom
+.global stack_top
 
 _start:
     ldr x0, =stack_top
