@@ -4,13 +4,10 @@ CC = $(CROSS)gcc
 LD = $(CROSS)ld
 OBJCOPY = $(CROSS)objcopy
 
-CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude -fno-builtin -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables $(BUILD_DEFINES)
-
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
-
-VERSION = 0.0.23
+VERSION = 0.0.24
 TARGET_NAME = qemu-virt-aarch64
 ARCH_NAME = aarch64
 BUILD_MODE = debug
@@ -40,8 +37,10 @@ BUILD_DEFINES = \
 	-DPARANOID_CMDLINE='"$(CMDLINE)"' \
 	$(CONFIG_DEFINES)
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c kernel/config.c kernel/boot_phase.c kernel/boot_check.c kernel/cmdline.c kernel/security.c kernel/security_policy.c kernel/selftest.c kernel/kernel_layout.c kernel/cpu_info.c
-KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
+CFLAGS = -Wall -Wextra -Werror=implicit-function-declaration -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude -fno-builtin -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables $(BUILD_DEFINES)
+
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c kernel/config.c kernel/boot_phase.c kernel/boot_check.c kernel/cmdline.c kernel/security.c kernel/security_policy.c kernel/selftest.c kernel/kernel_layout.c kernel/cpu_info.c kernel/boot.c
+KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/kernel_%.o,$(KERNEL_C))
 
 ARCH_C = arch/aarch64/cpu.c
 ARCH_C_OBJS = $(patsubst arch/aarch64/%.c,$(BUILD_DIR)/aarch64_%.o,$(ARCH_C))
@@ -49,6 +48,7 @@ ARCH_C_OBJS = $(patsubst arch/aarch64/%.c,$(BUILD_DIR)/aarch64_%.o,$(ARCH_C))
 ARCH_ASM = arch/aarch64/exception.S
 ARCH_ASM_OBJS = $(patsubst arch/aarch64/%.S,$(BUILD_DIR)/aarch64_%.o,$(ARCH_ASM))
 
+BOOT_OBJ = $(BUILD_DIR)/boot_start.o
 ARCH_OBJS = $(ARCH_C_OBJS) $(ARCH_ASM_OBJS)
 
 all: $(BUILD_DIR)/kernel.img
@@ -56,10 +56,10 @@ all: $(BUILD_DIR)/kernel.img
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/boot.o: boot/boot.S | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c boot/boot.S -o $(BUILD_DIR)/boot.o
+$(BOOT_OBJ): boot/boot.S | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c boot/boot.S -o $(BOOT_OBJ)
 
-$(BUILD_DIR)/%.o: kernel/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/kernel_%.o: kernel/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.c | $(BUILD_DIR)
@@ -68,8 +68,8 @@ $(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.c | $(BUILD_DIR)
 $(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.S | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/kernel.elf: $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(ARCH_OBJS) $(TARGET_DIR)/linker.ld
-	$(LD) -T $(TARGET_DIR)/linker.ld $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(ARCH_OBJS) -o $(BUILD_DIR)/kernel.elf
+$(BUILD_DIR)/kernel.elf: $(BOOT_OBJ) $(KERNEL_OBJS) $(ARCH_OBJS) $(TARGET_DIR)/linker.ld
+	$(LD) -T $(TARGET_DIR)/linker.ld $(BOOT_OBJ) $(KERNEL_OBJS) $(ARCH_OBJS) -o $(BUILD_DIR)/kernel.elf
 
 $(BUILD_DIR)/kernel.img: $(BUILD_DIR)/kernel.elf
 	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel.elf $(BUILD_DIR)/kernel.img
