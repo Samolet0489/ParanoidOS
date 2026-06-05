@@ -599,3 +599,33 @@ This does not provide real memory protection yet, but it helps detect simple sta
 
 Commit:
 Add basic stack guard
+
+## Milestone 12 completed
+
+Added current stack pointer and stack usage logging.
+
+Updated files:
+- include/paranoid/cpu.h
+- arch/aarch64/cpu.c
+- include/paranoid/stack.h
+- kernel/stack.c
+- kernel/main.c
+
+New functions:
+- cpu_stack_pointer()
+- stack_current_used()
+- stack_current_free()
+- stack_print_usage()
+
+New behavior:
+- Kernel reads the current ARM64 stack pointer
+- Kernel validates that SP is inside stack_bottom and stack_top
+- Kernel prints current stack pointer
+- Kernel prints stack used bytes
+- Kernel prints stack free bytes
+
+Security purpose:
+This helps detect dangerous stack growth before proper MMU-based guard pages exist.
+
+Commit:
+Add stack pointer usage logging
