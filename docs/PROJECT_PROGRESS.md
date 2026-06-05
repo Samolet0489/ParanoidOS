@@ -1010,3 +1010,45 @@ main.c is now cleaner and acts more like a boot coordinator instead of containin
 
 Commit:
 Move kernel self-tests into module
+
+## Milestone 22 completed
+
+Moved linker symbol and kernel layout reporting out of main.c.
+
+New files:
+- include/paranoid/kernel_layout.h
+- kernel/kernel_layout.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New functions:
+- kernel_layout_start()
+- kernel_layout_end()
+- kernel_layout_size()
+- kernel_layout_bss_start()
+- kernel_layout_bss_end()
+- kernel_layout_bss_size()
+- kernel_layout_print_info()
+
+Changed behavior:
+- main.c no longer directly references linker symbols
+- Kernel memory layout reporting is isolated in kernel/kernel_layout.c
+- Boot info phase now prints CPU information and kernel layout separately
+- Kernel layout output includes kernel start/end/size and BSS start/end/size
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+
+Expected results:
+- Normal mode reaches idle
+- Strict mode panics during boot checks
+- No compiler warnings
+
+Cleanup purpose:
+main.c is cleaner and acts more like a boot coordinator. Linker-symbol details are isolated in a dedicated kernel layout module.
+
+Commit:
+Move kernel layout reporting into module
