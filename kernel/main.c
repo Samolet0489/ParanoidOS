@@ -1,5 +1,4 @@
 #include <paranoid/log.h>
-#include <paranoid/cpu.h>
 #include <paranoid/exception.h>
 #include <paranoid/stack.h>
 #include <paranoid/build.h>
@@ -11,17 +10,7 @@
 #include <paranoid/security_policy.h>
 #include <paranoid/selftest.h>
 #include <paranoid/kernel_layout.h>
-#include <paranoid/types.h>
-
-static void print_cpu_info(void)
-{
-    u64 current_el = cpu_current_el();
-    u64 mpidr = cpu_mpidr();
-
-    log_info("CPU information");
-    log_info_dec("Current exception level", current_el);
-    log_info_hex("CPU MPIDR register", mpidr);
-}
+#include <paranoid/cpu_info.h>
 
 void kernel_main(void)
 {
@@ -29,7 +18,7 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 22: kernel layout module cleanup loaded");
+    log_info("Milestone 23: CPU info module cleanup loaded");
 
     boot_phase_print();
 
@@ -78,7 +67,7 @@ void kernel_main(void)
     log_info("Exception handling initialized");
 
     boot_phase_set("boot info");
-    print_cpu_info();
+    cpu_info_print();
     kernel_layout_print_info();
 
     boot_phase_set("boot checks");

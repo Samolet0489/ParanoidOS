@@ -10,7 +10,7 @@ BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
 
-VERSION = 0.0.22
+VERSION = 0.0.23
 TARGET_NAME = qemu-virt-aarch64
 ARCH_NAME = aarch64
 BUILD_MODE = debug
@@ -40,7 +40,7 @@ BUILD_DEFINES = \
 	-DPARANOID_CMDLINE='"$(CMDLINE)"' \
 	$(CONFIG_DEFINES)
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c kernel/config.c kernel/boot_phase.c kernel/boot_check.c kernel/cmdline.c kernel/security.c kernel/security_policy.c kernel/selftest.c kernel/kernel_layout.c
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c kernel/config.c kernel/boot_phase.c kernel/boot_check.c kernel/cmdline.c kernel/security.c kernel/security_policy.c kernel/selftest.c kernel/kernel_layout.c kernel/cpu_info.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
 ARCH_C = arch/aarch64/cpu.c
