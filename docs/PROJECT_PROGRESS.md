@@ -1250,3 +1250,25 @@ This is the first visible interactive OS-like feature. ParanoidOS no longer only
 
 Commit:
 Add interactive kernel shell
+
+## Phone Recon Phase 2 started
+
+Started safe read-only boot and partition reconnaissance for the Samsung Galaxy A32 5G SM-A326B/DS.
+
+Windows lab path:
+C:\0_Programming\Paranoid\Project_A32_Paranoid\a32-lab
+
+ADB path:
+C:\0_Programming\Paranoid\Project_A32_Paranoid\platform-tools\adb.exe
+
+ADB serial:
+R5CR614R8LW
+
+Created/expected folder:
+phase2_boot_recon
+
+Safety rule:
+No flashing, no bootloader unlock, no rooting, no partition writes. Read-only inspection only.
+
+Goal:
+Identify boot-related properties and partitions such as boot, vendor_boot, recovery, vbmeta, dtbo, super, userdata, metadata, efs, and related security state.
