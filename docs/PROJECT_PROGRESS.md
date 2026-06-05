@@ -783,3 +783,51 @@ This makes kernel failures easier to locate as the boot process becomes more com
 
 Commit:
 Add boot phase tracking
+
+## Milestone 17 completed
+
+Added structured boot checks.
+
+New files:
+- include/paranoid/boot_check.h
+- kernel/boot_check.c
+
+Updated files:
+- Makefile
+- include/paranoid/log.h
+- kernel/log.c
+- kernel/main.c
+
+New functions:
+- boot_check_report()
+- boot_check_run_all()
+- log_warn_pair()
+- log_error_pair()
+
+New behavior:
+- Kernel now runs structured boot checks before entering idle
+- Loose warning lines were replaced with named boot checks
+- Boot checks support INFO, WARN, and FATAL severity
+- Warning checks respect PANIC_ON_WARN=1
+- Panic-on-warning now reports boot phase as "boot checks"
+
+Current boot checks:
+- Scheduler: unavailable, WARN
+- Memory protection: unavailable, WARN
+- Networking: disabled by policy, INFO
+- Userspace: disabled by policy, INFO
+- Warning policy: current mode, INFO
+
+Tested with:
+- make run
+- make PANIC_ON_WARN=1 run
+
+Expected panic-on-warning result:
+- Boot phase: boot checks
+- Message: Warning treated as fatal
+
+Security/debug purpose:
+ParanoidOS now has a structured boot checklist instead of loose warnings. This makes missing security features explicit and severity-based.
+
+Commit:
+Add structured boot checks
