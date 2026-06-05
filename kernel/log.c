@@ -2,6 +2,7 @@
 #include <paranoid/uart.h>
 #include <paranoid/panic.h>
 #include <paranoid/format.h>
+#include <paranoid/config.h>
 
 static void log_write(const char *level, const char *message)
 {
@@ -31,6 +32,11 @@ void log_info(const char *message)
 void log_warn(const char *message)
 {
     log_write("WARN", message);
+
+    if (config_panic_on_warn_enabled())
+    {
+        panic("Warning treated as fatal");
+    }
 }
 
 void log_error(const char *message)

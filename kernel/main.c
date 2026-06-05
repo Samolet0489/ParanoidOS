@@ -92,7 +92,7 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 14: boot configuration flags loaded");
+    log_info("Milestone 15: warning policy loaded");
 
     build_print_info();
     config_print_info();
