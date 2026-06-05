@@ -4,12 +4,25 @@ CC = $(CROSS)gcc
 LD = $(CROSS)ld
 OBJCOPY = $(CROSS)objcopy
 
-CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude -fno-builtin -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables
+CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude -fno-builtin -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables $(BUILD_DEFINES)
 
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c
+VERSION = 0.0.13
+TARGET_NAME = qemu-virt-aarch64
+ARCH_NAME = aarch64
+BUILD_MODE = debug
+GIT_COMMIT = $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+
+BUILD_DEFINES = \
+	-DPARANOID_VERSION=\"$(VERSION)\" \
+	-DPARANOID_TARGET=\"$(TARGET_NAME)\" \
+	-DPARANOID_ARCH=\"$(ARCH_NAME)\" \
+	-DPARANOID_BUILD_MODE=\"$(BUILD_MODE)\" \
+	-DPARANOID_GIT_COMMIT=\"$(GIT_COMMIT)\"
+
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
 ARCH_C = arch/aarch64/cpu.c

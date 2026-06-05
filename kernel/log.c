@@ -44,6 +44,11 @@ void log_panic(const char *message)
     panic(message);
 }
 
+void log_info_pair(const char *name, const char *value)
+{
+    log_write_value("INFO", name, value);
+}
+
 void log_info_dec(const char *message, u64 value)
 {
     char buffer[21];

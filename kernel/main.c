@@ -5,6 +5,7 @@
 #include <paranoid/cpu.h>
 #include <paranoid/exception.h>
 #include <paranoid/stack.h>
+#include <paranoid/build.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -90,7 +91,9 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 12: stack pointer logging loaded");
+    log_info("Milestone 13: build metadata loaded");
+
+    build_print_info();
 
     run_kernel_tests();
 
