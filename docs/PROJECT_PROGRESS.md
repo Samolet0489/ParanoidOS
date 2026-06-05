@@ -485,3 +485,32 @@ The kernel can now print basic ARM64 boot information, including the current exc
 
 Commit:
 Add CPU and boot information logging
+
+
+## Milestone 8 completed
+
+Added basic ARM64 exception handling.
+
+New files:
+- include/paranoid/exception.h
+- kernel/exception.c
+- arch/aarch64/exception.S
+
+Updated files:
+- include/paranoid/cpu.h
+- arch/aarch64/cpu.c
+- kernel/main.c
+- Makefile
+
+New behavior:
+- Kernel installs an ARM64 exception vector table using VBAR_EL1
+- Kernel prints the vector table address
+- Kernel prints VBAR_EL1
+- Kernel has a C exception_handler()
+- Exception handler prints exception type, ESR_EL1, ELR_EL1, and FAR_EL1
+- Optional test uses brk #0 through exception_trigger_test()
+
+Commit:
+Add basic ARM64 exception handling
+
+
