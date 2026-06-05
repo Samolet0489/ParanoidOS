@@ -6,6 +6,7 @@
 #include <paranoid/exception.h>
 #include <paranoid/stack.h>
 #include <paranoid/build.h>
+#include <paranoid/config.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -91,13 +92,21 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 13: build metadata loaded");
+    log_info("Milestone 14: boot configuration flags loaded");
 
     build_print_info();
+    config_print_info();
 
-    run_kernel_tests();
+    if (config_self_tests_enabled())
+    {
+        run_kernel_tests();
+        log_info("Kernel self-tests passed");
+    }
+    else
+    {
+        log_warn("Kernel self-tests disabled");
+    }
 
-    log_info("Kernel self-tests passed");
     log_info("BSS section cleared successfully");
 
     stack_init_guard();

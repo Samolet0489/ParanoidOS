@@ -15,14 +15,22 @@ ARCH_NAME = aarch64
 BUILD_MODE = debug
 GIT_COMMIT = $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 
+CONFIG_DEFINES = \
+	-DPARANOID_CONFIG_DEBUG=1 \
+	-DPARANOID_CONFIG_SELF_TESTS=1 \
+	-DPARANOID_CONFIG_NETWORK=0 \
+	-DPARANOID_CONFIG_USERSPACE=0 \
+	-DPARANOID_CONFIG_PANIC_ON_WARN=0
+
 BUILD_DEFINES = \
 	-DPARANOID_VERSION=\"$(VERSION)\" \
 	-DPARANOID_TARGET=\"$(TARGET_NAME)\" \
 	-DPARANOID_ARCH=\"$(ARCH_NAME)\" \
 	-DPARANOID_BUILD_MODE=\"$(BUILD_MODE)\" \
-	-DPARANOID_GIT_COMMIT=\"$(GIT_COMMIT)\"
+	-DPARANOID_GIT_COMMIT=\"$(GIT_COMMIT)\" \
+	$(CONFIG_DEFINES)
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c kernel/stack.c kernel/build.c kernel/config.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
 ARCH_C = arch/aarch64/cpu.c
