@@ -1308,3 +1308,35 @@ Interpretation:
 
 Next phone recon step:
 Collect exact firmware identity and find the matching stock firmware package before any future boot image experiments.
+
+## Phone Recon Phase 3 completed
+
+Collected exact firmware identity for the Samsung Galaxy A32 5G learning device.
+
+Device identity:
+- Model: SM-A326B
+- Device: a32x
+- Product name: a32xeea
+- Android version: 13
+- Build display ID: TP1A.220624.014.A326BXXSECYB5
+- Build fingerprint: samsung/a32xeea/a32x:13/TP1A.220624.014/A326BXXSECYB5:user/release-keys
+- Bootloader: A326BXXSECYB5
+- Product code: SM-A326BZBUBGL
+- CSC / sales code: BGL
+- Country: Bulgaria
+- Country ISO: BG
+- OMC path: /optics/configs/carriers/single/BGL/conf
+
+Boot/security state from Phase 2:
+- Verified boot state: green
+- VBMeta device state: locked
+- Flash locked: 1
+
+Safety status:
+- No flashing
+- No bootloader unlock
+- No rooting
+- No partition writes
+
+Next phone recon step:
+Find and download the matching stock firmware package for SM-A326B / BGL / A326BXXSECYB5, then unpack it offline and inspect boot.img, recovery.img, vbmeta.img, dtbo.img, super.img, and related files without flashing.
