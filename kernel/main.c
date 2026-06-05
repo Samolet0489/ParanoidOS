@@ -89,7 +89,7 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 8: basic exception handling loaded");
+    log_info("Milestone 9: ESR exception decoding loaded");
 
     run_kernel_tests();
 
@@ -98,6 +98,8 @@ void kernel_main(void)
 
     exception_init();
     log_info("Exception handling initialized");
+
+    // Panic test
     //log_warn("Triggering test exception");
     //exception_trigger_test();
 
