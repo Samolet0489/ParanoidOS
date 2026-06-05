@@ -971,3 +971,42 @@ ParanoidOS now prints one clear summary of the effective security decisions afte
 
 Commit:
 Add security policy report
+
+## Milestone 21 completed
+
+Moved kernel self-tests out of main.c into a dedicated self-test module.
+
+New files:
+- include/paranoid/selftest.h
+- kernel/selftest.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New function:
+- selftest_run_all()
+
+Changed behavior:
+- main.c no longer contains run_kernel_tests()
+- self-test logic is isolated in kernel/selftest.c
+- BSS clearing tests moved into the self-test module
+- String/memory/format tests moved into the self-test module
+- Boot flow still respects config_self_tests_enabled()
+- Paranoid mode still forces self-tests enabled
+
+Tested with:
+- make run
+- make CMDLINE="security=normal debug=1 self_tests=0 network=0 userspace=0 panic_on_warn=0" run
+- make CMDLINE="security=paranoid debug=1 self_tests=0 network=0 userspace=0 panic_on_warn=0" run
+
+Expected results:
+- Normal mode reaches idle
+- self_tests=0 skips self-tests in normal mode
+- security=paranoid forces self-tests enabled
+
+Cleanup purpose:
+main.c is now cleaner and acts more like a boot coordinator instead of containing test implementation details.
+
+Commit:
+Move kernel self-tests into module
