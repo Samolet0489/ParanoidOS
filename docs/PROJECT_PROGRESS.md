@@ -629,3 +629,37 @@ This helps detect dangerous stack growth before proper MMU-based guard pages exi
 
 Commit:
 Add stack pointer usage logging
+
+## Milestone 13 completed
+
+Added build metadata logging.
+
+New files:
+- include/paranoid/build.h
+- kernel/build.c
+
+Updated files:
+- Makefile
+- include/paranoid/log.h
+- kernel/log.c
+- kernel/main.c
+
+New functions:
+- build_print_info()
+- log_info_pair()
+
+New build metadata:
+- PARANOID_VERSION
+- PARANOID_TARGET
+- PARANOID_ARCH
+- PARANOID_BUILD_MODE
+- PARANOID_GIT_COMMIT
+
+New behavior:
+- Kernel prints version, target, architecture, build mode, and Git commit during boot.
+
+Security/debug purpose:
+This makes it easier to identify exactly what kernel build is running when debugging crashes, exceptions, and future device experiments.
+
+Commit:
+Add build metadata logging
