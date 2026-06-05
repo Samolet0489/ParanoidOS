@@ -1087,3 +1087,49 @@ main.c is now cleaner and acts more like a boot coordinator. CPU register report
 
 Commit:
 Move CPU info reporting into module
+
+## Milestone 24 completed
+
+Moved the boot sequence out of main.c into a dedicated boot module.
+
+New files:
+- include/paranoid/boot.h
+- kernel/boot.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New function:
+- boot_run()
+
+New internal boot helpers:
+- boot_run_self_tests()
+- boot_setup_stack()
+- boot_setup_exceptions()
+- boot_print_system_info()
+- boot_run_checks()
+- boot_enter_idle()
+
+Changed behavior:
+- main.c is now tiny and only calls boot_run()
+- If boot_run() ever returns, kernel_main() panics
+- Boot flow is now coordinated from kernel/boot.c
+- Boot phases are still preserved
+- Normal mode still reaches idle
+- Strict mode still panics during boot checks
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+
+Expected results:
+- Normal mode reaches idle
+- Strict mode panics during boot checks
+- No compiler warnings
+
+Cleanup purpose:
+main.c is now minimal. ParanoidOS has a clearer boot coordinator module, making future boot logic easier to expand.
+
+Commit:
+Move boot sequence into module
