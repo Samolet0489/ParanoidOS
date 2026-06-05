@@ -514,3 +514,33 @@ Commit:
 Add basic ARM64 exception handling
 
 
+## Milestone 9 completed
+
+Added basic ESR_EL1 decoding for ARM64 exceptions.
+
+Updated files:
+- kernel/exception.c
+- kernel/main.c
+
+New behavior:
+- Exception handler now extracts the ESR exception class
+- Exception handler prints the exception class in decimal and hexadecimal
+- Exception handler prints a human-readable exception class name
+- Exception handler prints the instruction length bit
+- Exception handler prints the ISS field
+
+Important ESR fields:
+- EC: Exception Class, bits [31:26]
+- IL: Instruction Length, bit [25]
+- ISS: Instruction Specific Syndrome, bits [24:0]
+
+Tested with:
+- brk #0 through exception_trigger_test()
+
+Expected BRK result:
+- ESR exception class: 60
+- ESR exception class hex: 0x000000000000003C
+- ESR class name: BRK instruction
+
+Commit:
+Decode ESR exception information
