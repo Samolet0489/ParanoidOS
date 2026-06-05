@@ -7,6 +7,7 @@
 #include <paranoid/stack.h>
 #include <paranoid/build.h>
 #include <paranoid/config.h>
+#include <paranoid/boot_phase.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -90,12 +91,21 @@ static void print_boot_info(void)
 
 void kernel_main(void)
 {
+    boot_phase_set("kernel entry");
+
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 15: warning policy loaded");
+    log_info("Milestone 16: boot phase tracking loaded");
 
+    boot_phase_print();
+
+    boot_phase_set("build info");
     build_print_info();
+
+    boot_phase_set("boot configuration");
     config_print_info();
+
+    boot_phase_set("self-tests");
 
     if (config_self_tests_enabled())
     {
@@ -109,6 +119,8 @@ void kernel_main(void)
 
     log_info("BSS section cleared successfully");
 
+    boot_phase_set("stack setup");
+
     stack_init_guard();
     stack_check_guard();
     log_info("Stack guard initialized");
@@ -116,10 +128,15 @@ void kernel_main(void)
     stack_print_info();
     stack_print_usage();
 
+    boot_phase_set("exception setup");
+
     exception_init();
     log_info("Exception handling initialized");
 
+    boot_phase_set("boot info");
     print_boot_info();
+
+    boot_phase_set("idle");
 
     log_warn("No scheduler loaded");
     log_warn("No memory protection loaded");
@@ -127,7 +144,7 @@ void kernel_main(void)
 
     while (1)
     {
-      stack_check_guard();
-      __asm__ volatile("wfe");
+        stack_check_guard();
+        __asm__ volatile("wfe");
     }
 }
