@@ -879,3 +879,53 @@ ParanoidOS now has a clean placeholder for future boot arguments. This prepares 
 
 Commit:
 Add kernel command line placeholder
+
+## Milestone 19 completed
+
+Added security mode profiles.
+
+New files:
+- include/paranoid/security.h
+- kernel/security.c
+
+Updated files:
+- Makefile
+- kernel/config.c
+- kernel/main.c
+
+New security modes:
+- security=normal
+- security=strict
+- security=paranoid
+
+New functions:
+- security_init()
+- security_print_info()
+- security_current_mode()
+- security_mode_name()
+- security_strict_or_higher()
+- security_paranoid_enabled()
+
+New behavior:
+- Kernel parses the security mode from the command-line placeholder
+- security=normal keeps default behavior
+- security=strict makes warnings fatal
+- security=paranoid makes warnings fatal and forces self-tests enabled
+- Boot output now prints the selected security profile
+- Boot configuration reflects the resolved policy after security mode is applied
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+- make CMDLINE="security=paranoid debug=1 self_tests=0 network=0 userspace=0 panic_on_warn=0" run
+
+Expected strict/paranoid result:
+- Panic on warning: enabled
+- Boot phase: boot checks
+- Message: Warning treated as fatal
+
+Security purpose:
+ParanoidOS now has named security profiles instead of only individual feature flags. This creates a clean foundation for stronger default policies later.
+
+Commit:
+Add security mode profiles
