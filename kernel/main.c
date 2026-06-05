@@ -1,4 +1,5 @@
 #include <paranoid/log.h>
+#include <paranoid/cmdline.h>
 #include <paranoid/panic.h>
 #include <paranoid/string.h>
 #include <paranoid/format.h>
@@ -96,12 +97,15 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 17: structured boot checks loaded");
+    log_info("Milestone 18: kernel command line placeholder loaded");
 
     boot_phase_print();
 
     boot_phase_set("build info");
     build_print_info();
+
+    boot_phase_set("command line");
+    cmdline_print_info();
 
     boot_phase_set("boot configuration");
     config_print_info();
