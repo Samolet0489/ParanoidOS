@@ -82,7 +82,7 @@ void boot_run(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 24: boot sequence module loaded");
+    log_info("Milestone 25: improved panic output loaded");
 
     boot_phase_print();
 
