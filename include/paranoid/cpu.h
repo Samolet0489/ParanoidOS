@@ -9,4 +9,6 @@ u64 cpu_mpidr(void);
 void cpu_set_vbar(u64 address);
 u64 cpu_get_vbar(void);
 
+u64 cpu_stack_pointer(void);
+
 #endif

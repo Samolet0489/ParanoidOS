@@ -90,7 +90,7 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 11: basic stack guard loaded");
+    log_info("Milestone 12: stack pointer logging loaded");
 
     run_kernel_tests();
 
@@ -102,6 +102,7 @@ void kernel_main(void)
     log_info("Stack guard initialized");
 
     stack_print_info();
+    stack_print_usage();
 
     exception_init();
     log_info("Exception handling initialized");
@@ -114,6 +115,7 @@ void kernel_main(void)
 
     while (1)
     {
-        __asm__ volatile("wfe");
+      stack_check_guard();
+      __asm__ volatile("wfe");
     }
 }

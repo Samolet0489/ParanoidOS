@@ -32,3 +32,12 @@ u64 cpu_get_vbar(void)
 
     return value;
 }
+
+u64 cpu_stack_pointer(void)
+{
+    u64 value;
+
+    __asm__ volatile("mov %0, sp" : "=r"(value));
+
+    return value;
+}
