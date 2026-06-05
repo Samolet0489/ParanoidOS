@@ -4,5 +4,7 @@
 void uart_putc(char c);
 void uart_puts(const char *text);
 
-#endif
+int uart_has_char(void);
+char uart_getc(void);
 
+#endif

@@ -1,3 +1,5 @@
+#include <paranoid/panic.h>
+#include <paranoid/shell.h>
 #include <paranoid/boot.h>
 #include <paranoid/log.h>
 #include <paranoid/exception.h>
@@ -64,16 +66,15 @@ static void boot_run_checks(void)
     boot_check_run_all();
 }
 
-static void boot_enter_idle(void)
-{
-    boot_phase_set("idle");
-    log_info("Kernel entered idle state");
 
-    while (1)
-    {
-        stack_check_guard();
-        __asm__ volatile("wfe");
-    }
+static void boot_enter_shell(void)
+{
+    boot_phase_set("shell");
+    log_info("Kernel entering interactive shell");
+
+    shell_run();
+
+    panic("shell_run returned unexpectedly");
 }
 
 void boot_run(void)
@@ -82,7 +83,7 @@ void boot_run(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 25: improved panic output loaded");
+    log_info("Milestone 26: interactive kernel shell loaded");
 
     boot_phase_print();
 
@@ -107,5 +108,5 @@ void boot_run(void)
     boot_setup_exceptions();
     boot_print_system_info();
     boot_run_checks();
-    boot_enter_idle();
+    boot_enter_shell();
 }
