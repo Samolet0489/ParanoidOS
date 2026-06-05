@@ -1052,3 +1052,38 @@ main.c is cleaner and acts more like a boot coordinator. Linker-symbol details a
 
 Commit:
 Move kernel layout reporting into module
+
+## Milestone 23 completed
+
+Moved CPU information reporting out of main.c.
+
+New files:
+- include/paranoid/cpu_info.h
+- kernel/cpu_info.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New function:
+- cpu_info_print()
+
+Changed behavior:
+- main.c no longer directly reads CPU registers
+- CPU reporting is isolated in kernel/cpu_info.c
+- Boot info phase now calls cpu_info_print() and kernel_layout_print_info()
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+
+Expected results:
+- Normal mode reaches idle
+- Strict mode panics during boot checks
+- No compiler warnings
+
+Cleanup purpose:
+main.c is now cleaner and acts more like a boot coordinator. CPU register reporting is isolated in a dedicated module.
+
+Commit:
+Move CPU info reporting into module
