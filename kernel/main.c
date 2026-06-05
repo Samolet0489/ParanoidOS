@@ -1,5 +1,6 @@
 #include <paranoid/security.h>
 #include <paranoid/log.h>
+#include <paranoid/security_policy.h>
 #include <paranoid/cmdline.h>
 #include <paranoid/panic.h>
 #include <paranoid/string.h>
@@ -98,7 +99,7 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 19: security profiles loaded");
+    log_info("Milestone 20: security policy report loaded");
 
     boot_phase_print();
 
@@ -114,6 +115,9 @@ void kernel_main(void)
 
     boot_phase_set("boot configuration");
     config_print_info();
+
+    boot_phase_set("security policy report");
+    security_policy_print_report();
 
     boot_phase_set("self-tests");
 
