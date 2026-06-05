@@ -1,5 +1,6 @@
 #include <paranoid/config.h>
 #include <paranoid/log.h>
+#include <paranoid/cmdline.h>
 
 static const char *enabled_text(int value)
 {
@@ -13,27 +14,27 @@ static const char *enabled_text(int value)
 
 int config_debug_enabled(void)
 {
-    return PARANOID_CONFIG_DEBUG;
+    return cmdline_bool_enabled("debug", PARANOID_CONFIG_DEBUG);
 }
 
 int config_self_tests_enabled(void)
 {
-    return PARANOID_CONFIG_SELF_TESTS;
+    return cmdline_bool_enabled("self_tests", PARANOID_CONFIG_SELF_TESTS);
 }
 
 int config_network_enabled(void)
 {
-    return PARANOID_CONFIG_NETWORK;
+    return cmdline_bool_enabled("network", PARANOID_CONFIG_NETWORK);
 }
 
 int config_userspace_enabled(void)
 {
-    return PARANOID_CONFIG_USERSPACE;
+    return cmdline_bool_enabled("userspace", PARANOID_CONFIG_USERSPACE);
 }
 
 int config_panic_on_warn_enabled(void)
 {
-    return PARANOID_CONFIG_PANIC_ON_WARN;
+    return cmdline_bool_enabled("panic_on_warn", PARANOID_CONFIG_PANIC_ON_WARN);
 }
 
 void config_print_info(void)
