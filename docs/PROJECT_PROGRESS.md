@@ -1133,3 +1133,36 @@ main.c is now minimal. ParanoidOS has a clearer boot coordinator module, making 
 
 Commit:
 Move boot sequence into module
+
+## Milestone 25 completed
+
+Improved panic output context.
+
+Updated files:
+- kernel/panic.c
+- kernel/boot.c
+- Makefile
+
+Changed behavior:
+- Panic output now prints a dedicated panic context section
+- Panic output includes current boot phase
+- Panic output includes current exception level
+- Panic output includes current stack pointer
+- Panic output includes kernel start/end addresses
+- Panic output includes BSS start/end addresses
+- Panic still uses UART directly instead of the logger to avoid recursion
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+
+Expected strict result:
+- Panic occurs during boot checks
+- Panic context shows boot phase as "boot checks"
+- Panic context prints CPU/kernel memory information
+
+Debug purpose:
+Panic output now gives useful low-level context immediately, making future crashes easier to understand.
+
+Commit:
+Improve panic output context
