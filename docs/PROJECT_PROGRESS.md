@@ -831,3 +831,51 @@ ParanoidOS now has a structured boot checklist instead of loose warnings. This m
 
 Commit:
 Add structured boot checks
+
+## Milestone 18 completed
+
+Added kernel command-line placeholder support.
+
+New files:
+- include/paranoid/cmdline.h
+- kernel/cmdline.c
+
+Updated files:
+- Makefile
+- kernel/config.c
+- kernel/main.c
+
+New functions:
+- cmdline_init()
+- cmdline_get()
+- cmdline_print_info()
+- cmdline_has_key_value()
+- cmdline_bool_enabled()
+
+New Makefile variable:
+- CMDLINE
+
+Default command line:
+- security=normal debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0
+
+New behavior:
+- Kernel prints the command line during boot
+- Config values can now be overridden by command-line-style key/value pairs
+- self_tests=0 disables kernel self-tests
+- panic_on_warn=1 makes warnings fatal
+- This is currently a build-time placeholder, not yet a real bootloader/device-tree command line
+
+Tested with:
+- make run
+- make CMDLINE="security=normal debug=1 self_tests=0 network=0 userspace=0 panic_on_warn=0" run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=1" run
+
+Expected strict result:
+- Boot phase: boot checks
+- Message: Warning treated as fatal
+
+Security/debug purpose:
+ParanoidOS now has a clean placeholder for future boot arguments. This prepares the kernel for real boot-time policy configuration later.
+
+Commit:
+Add kernel command line placeholder
