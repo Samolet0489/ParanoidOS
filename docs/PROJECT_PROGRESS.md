@@ -929,3 +929,45 @@ ParanoidOS now has named security profiles instead of only individual feature fl
 
 Commit:
 Add security mode profiles
+
+## Milestone 20 completed
+
+Added a security policy report.
+
+New files:
+- include/paranoid/security_policy.h
+- kernel/security_policy.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New function:
+- security_policy_print_report()
+
+New behavior:
+- Kernel prints a resolved security policy report during boot
+- Report shows the selected security profile
+- Report shows warning handling behavior
+- Report shows self-test policy
+- Report shows networking policy
+- Report shows userspace policy
+- Report shows debug policy
+- Report shows whether strict/paranoid policy is active
+
+Tested with:
+- make run
+- make CMDLINE="security=strict debug=1 self_tests=1 network=0 userspace=0 panic_on_warn=0" run
+- make CMDLINE="security=paranoid debug=1 self_tests=0 network=0 userspace=0 panic_on_warn=0" run
+
+Expected strict/paranoid behavior:
+- Security policy report prints successfully
+- Warning handling becomes fatal
+- Boot checks panic on first warning
+- Panic phase is "boot checks"
+
+Security/debug purpose:
+ParanoidOS now prints one clear summary of the effective security decisions after command-line and security profile resolution.
+
+Commit:
+Add security policy report
