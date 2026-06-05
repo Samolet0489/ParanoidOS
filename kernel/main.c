@@ -8,6 +8,7 @@
 #include <paranoid/build.h>
 #include <paranoid/config.h>
 #include <paranoid/boot_phase.h>
+#include <paranoid/boot_check.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -95,7 +96,7 @@ void kernel_main(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 16: boot phase tracking loaded");
+    log_info("Milestone 17: structured boot checks loaded");
 
     boot_phase_print();
 
@@ -136,15 +137,16 @@ void kernel_main(void)
     boot_phase_set("boot info");
     print_boot_info();
 
-    boot_phase_set("idle");
+    boot_phase_set("boot checks");
+    boot_check_run_all();
 
-    log_warn("No scheduler loaded");
-    log_warn("No memory protection loaded");
-    log_warn("No userspace loaded");
+    boot_phase_set("idle");
+    log_info("Kernel entered idle state");
 
     while (1)
     {
         stack_check_guard();
         __asm__ volatile("wfe");
     }
+
 }

@@ -24,6 +24,14 @@ static void log_write_value(const char *level, const char *message, const char *
     uart_puts("\n");
 }
 
+static void log_handle_warning_policy(void)
+{
+    if (config_panic_on_warn_enabled())
+    {
+        panic("Warning treated as fatal");
+    }
+}
+
 void log_info(const char *message)
 {
     log_write("INFO", message);
@@ -32,11 +40,7 @@ void log_info(const char *message)
 void log_warn(const char *message)
 {
     log_write("WARN", message);
-
-    if (config_panic_on_warn_enabled())
-    {
-        panic("Warning treated as fatal");
-    }
+    log_handle_warning_policy();
 }
 
 void log_error(const char *message)
@@ -53,6 +57,17 @@ void log_panic(const char *message)
 void log_info_pair(const char *name, const char *value)
 {
     log_write_value("INFO", name, value);
+}
+
+void log_warn_pair(const char *name, const char *value)
+{
+    log_write_value("WARN", name, value);
+    log_handle_warning_policy();
+}
+
+void log_error_pair(const char *name, const char *value)
+{
+    log_write_value("ERROR", name, value);
 }
 
 void log_info_dec(const char *message, u64 value)
