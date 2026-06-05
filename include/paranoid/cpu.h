@@ -6,4 +6,7 @@
 u64 cpu_current_el(void);
 u64 cpu_mpidr(void);
 
+void cpu_set_vbar(u64 address);
+u64 cpu_get_vbar(void);
+
 #endif

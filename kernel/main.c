@@ -3,6 +3,7 @@
 #include <paranoid/string.h>
 #include <paranoid/format.h>
 #include <paranoid/cpu.h>
+#include <paranoid/exception.h>
 
 extern char __kernel_start;
 extern char __kernel_end;
@@ -88,12 +89,17 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 7: BSS clearing during boot loaded");
+    log_info("Milestone 8: basic exception handling loaded");
 
     run_kernel_tests();
 
     log_info("Kernel self-tests passed");
     log_info("BSS section cleared successfully");
+
+    exception_init();
+    log_info("Exception handling initialized");
+    //log_warn("Triggering test exception");
+    //exception_trigger_test();
 
     print_boot_info();
 

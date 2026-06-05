@@ -17,3 +17,18 @@ u64 cpu_mpidr(void)
 
     return value;
 }
+
+void cpu_set_vbar(u64 address)
+{
+    __asm__ volatile("msr VBAR_EL1, %0" : : "r"(address) : "memory");
+    __asm__ volatile("isb");
+}
+
+u64 cpu_get_vbar(void)
+{
+    u64 value;
+
+    __asm__ volatile("mrs %0, VBAR_EL1" : "=r"(value));
+
+    return value;
+}

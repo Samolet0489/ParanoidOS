@@ -9,11 +9,16 @@ CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-onl
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
-KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c
+KERNEL_C = kernel/main.c kernel/uart.c kernel/panic.c kernel/string.c kernel/log.c kernel/format.c kernel/exception.c
 KERNEL_OBJS = $(patsubst kernel/%.c,$(BUILD_DIR)/%.o,$(KERNEL_C))
 
 ARCH_C = arch/aarch64/cpu.c
-ARCH_OBJS = $(patsubst arch/aarch64/%.c,$(BUILD_DIR)/aarch64_%.o,$(ARCH_C))
+ARCH_C_OBJS = $(patsubst arch/aarch64/%.c,$(BUILD_DIR)/aarch64_%.o,$(ARCH_C))
+
+ARCH_ASM = arch/aarch64/exception.S
+ARCH_ASM_OBJS = $(patsubst arch/aarch64/%.S,$(BUILD_DIR)/aarch64_%.o,$(ARCH_ASM))
+
+ARCH_OBJS = $(ARCH_C_OBJS) $(ARCH_ASM_OBJS)
 
 all: $(BUILD_DIR)/kernel.img
 
@@ -27,6 +32,9 @@ $(BUILD_DIR)/%.o: kernel/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/aarch64_%.o: arch/aarch64/%.S | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/kernel.elf: $(BUILD_DIR)/boot.o $(KERNEL_OBJS) $(ARCH_OBJS) $(TARGET_DIR)/linker.ld
