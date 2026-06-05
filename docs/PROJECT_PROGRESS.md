@@ -735,3 +735,51 @@ This is the first real paranoid policy mode. The kernel can now be configured to
 
 Commit:
 Add panic on warning policy
+
+## Milestone 16 completed
+
+Added boot phase tracking.
+
+New files:
+- include/paranoid/boot_phase.h
+- kernel/boot_phase.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+- kernel/panic.c
+
+New functions:
+- boot_phase_set()
+- boot_phase_name()
+- boot_phase_print()
+
+New behavior:
+- Kernel tracks the current boot phase
+- Kernel prints the initial boot phase during startup
+- Panic output now includes the current boot phase
+- Panic-on-warning mode now shows where the fatal warning happened
+
+Boot phases currently used:
+- kernel entry
+- build info
+- boot configuration
+- self-tests
+- stack setup
+- exception setup
+- boot info
+- idle
+
+Tested with:
+- make run
+- make PANIC_ON_WARN=1 run
+
+Expected panic-on-warning result:
+- Boot phase: idle
+- Message: Warning treated as fatal
+
+Security/debug purpose:
+This makes kernel failures easier to locate as the boot process becomes more complex.
+
+Commit:
+Add boot phase tracking
