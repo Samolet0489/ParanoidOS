@@ -572,3 +572,30 @@ Expected result:
 
 Commit:
 Separate kernel ELF segments
+
+
+## Milestone 11 completed
+
+Added a basic stack guard.
+
+New files:
+- include/paranoid/stack.h
+- kernel/stack.c
+
+Updated files:
+- boot/boot.S
+- kernel/main.c
+- Makefile
+
+New behavior:
+- stack_bottom and stack_top are now exported from boot.S
+- Kernel initializes a 64-byte guard pattern at the bottom of the stack
+- Kernel checks the stack guard during boot
+- Kernel checks the stack guard while idle
+- Kernel prints stack bottom, stack top, stack size, and guard size
+
+Security purpose:
+This does not provide real memory protection yet, but it helps detect simple stack overflow corruption before the MMU is implemented.
+
+Commit:
+Add basic stack guard
