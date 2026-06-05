@@ -89,7 +89,7 @@ void kernel_main(void)
 {
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 9: ESR exception decoding loaded");
+    log_info("Milestone 10: kernel sections separated");
 
     run_kernel_tests();
 

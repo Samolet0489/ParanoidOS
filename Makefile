@@ -4,7 +4,7 @@ CC = $(CROSS)gcc
 LD = $(CROSS)ld
 OBJCOPY = $(CROSS)objcopy
 
-CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude
+CFLAGS = -Wall -Wextra -ffreestanding -nostdlib -nostartfiles -mgeneral-regs-only -O2 -Iinclude -fno-builtin -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables
 
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
