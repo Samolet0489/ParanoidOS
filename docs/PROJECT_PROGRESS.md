@@ -1272,3 +1272,39 @@ No flashing, no bootloader unlock, no rooting, no partition writes. Read-only in
 
 Goal:
 Identify boot-related properties and partitions such as boot, vendor_boot, recovery, vbmeta, dtbo, super, userdata, metadata, efs, and related security state.
+
+## Phone Recon Phase 2 completed
+
+Completed safe read-only boot and partition reconnaissance for Samsung Galaxy A32 5G SM-A326B/DS.
+
+Results:
+- Verified boot state: green
+- VBMeta device state: locked
+- Flash locked: 1
+- Bootloader: A326BXXSECYB5
+
+Important partitions found:
+- boot -> /dev/block/sdc43
+- recovery -> /dev/block/sdc44
+- dtbo -> /dev/block/sdc17
+- vbmeta -> /dev/block/sdc18
+- vbmeta_system -> /dev/block/sdc45
+- vbmeta_vendor -> /dev/block/sdc46
+- super -> /dev/block/sdc50
+- userdata -> /dev/block/sdc56
+- metadata -> /dev/block/sdc31
+- efs -> /dev/block/sdc2
+- sec_efs -> /dev/block/sdc3
+- param -> /dev/block/sdc41
+- up_param -> /dev/block/sdc42
+- preloader_a -> /dev/block/mmcblk0boot0
+- preloader_b -> /dev/block/mmcblk0boot1
+
+Interpretation:
+- Device is still locked and verified.
+- Android Verified Boot is passing.
+- The phone has a dynamic partition container named super.
+- No flashing, unlocking, rooting, or partition writes have been done.
+
+Next phone recon step:
+Collect exact firmware identity and find the matching stock firmware package before any future boot image experiments.
