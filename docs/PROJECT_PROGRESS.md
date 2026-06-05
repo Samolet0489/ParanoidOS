@@ -663,3 +663,43 @@ This makes it easier to identify exactly what kernel build is running when debug
 
 Commit:
 Add build metadata logging
+
+## Milestone 14 completed
+
+Added boot configuration flags.
+
+New files:
+- include/paranoid/config.h
+- kernel/config.c
+
+Updated files:
+- Makefile
+- kernel/main.c
+
+New functions:
+- config_print_info()
+- config_debug_enabled()
+- config_self_tests_enabled()
+- config_network_enabled()
+- config_userspace_enabled()
+- config_panic_on_warn_enabled()
+
+New compile-time flags:
+- PARANOID_CONFIG_DEBUG
+- PARANOID_CONFIG_SELF_TESTS
+- PARANOID_CONFIG_NETWORK
+- PARANOID_CONFIG_USERSPACE
+- PARANOID_CONFIG_PANIC_ON_WARN
+
+Default configuration:
+- Debug mode: enabled
+- Self tests: enabled
+- Networking: disabled
+- Userspace: disabled
+- Panic on warning: disabled
+
+Security purpose:
+ParanoidOS now has explicit boot-time feature flags. Features are disabled by default unless intentionally enabled.
+
+Commit:
+Add boot configuration flags
