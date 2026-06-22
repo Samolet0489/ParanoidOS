@@ -105,7 +105,7 @@ void boot_run(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 28: MMU W^X memory protection loaded");
+    log_info("Milestone 29: guard-page fault proof loaded");
 
     boot_phase_print();
 

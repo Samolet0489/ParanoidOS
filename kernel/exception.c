@@ -2,6 +2,7 @@
 #include <paranoid/cpu.h>
 #include <paranoid/log.h>
 #include <paranoid/panic.h>
+#include <paranoid/mmu.h>
 
 extern char exception_vector_table;
 
@@ -130,6 +131,13 @@ static void decode_esr(u64 esr)
     log_info_hex("ESR ISS field", iss);
 }
 
+static int exception_is_data_abort(u64 esr)
+{
+    u64 ec = (esr >> ESR_EC_SHIFT) & ESR_EC_MASK;
+
+    return ec == 0x24 || ec == 0x25;
+}
+
 void exception_init(void)
 {
     cpu_set_vbar((u64)&exception_vector_table);
@@ -140,6 +148,10 @@ void exception_init(void)
 
 void exception_handler(u64 type, u64 esr, u64 elr, u64 far)
 {
+    int expected_guard_fault =
+        exception_is_data_abort(esr) &&
+        mmu_handle_guard_page_fault(far);
+
     log_error("CPU exception caught");
     log_error(exception_type_name(type));
 
@@ -149,6 +161,12 @@ void exception_handler(u64 type, u64 esr, u64 elr, u64 far)
     log_info_hex("FAR_EL1", far);
 
     decode_esr(esr);
+
+    if (expected_guard_fault)
+    {
+        log_info("Expected guard-page data abort observed");
+        panic("Guard-page protection test succeeded");
+    }
 
     panic("Unhandled CPU exception");
 }

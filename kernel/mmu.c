@@ -1,5 +1,6 @@
 #include <paranoid/mmu.h>
 #include <paranoid/log.h>
+#include <paranoid/panic.h>
 #include <paranoid/types.h>
 
 extern char __text_start;
@@ -10,8 +11,8 @@ extern char __data_start;
 extern char __data_end;
 extern char __bss_start;
 extern char __bss_end;
-extern char __stack_guard_start;
-extern char __stack_guard_end;
+extern char __stack_guard_start[];
+extern char __stack_guard_end[];
 extern char stack_bottom;
 extern char stack_top;
 extern char __page_tables_start;
@@ -74,6 +75,8 @@ static u64 mmu_l2_ram_table[MMU_TABLE_ENTRIES]
 
 static u64 mmu_l3_kernel_table[MMU_TABLE_ENTRIES]
     __attribute__((aligned(MMU_PAGE_SIZE), section(".page_tables")));
+
+static volatile int mmu_guard_test_active;
 
 static u64 mmu_align_down(u64 value)
 {
@@ -301,6 +304,48 @@ int mmu_init(void)
     return mmu_is_enabled();
 }
 
+int mmu_handle_guard_page_fault(u64 fault_address)
+{
+    u64 guard_start = (u64)__stack_guard_start;
+    u64 guard_end = (u64)__stack_guard_end;
+
+    if (!mmu_guard_test_active)
+    {
+        return 0;
+    }
+
+    if (fault_address < guard_start || fault_address >= guard_end)
+    {
+        return 0;
+    }
+
+    mmu_guard_test_active = 0;
+
+    return 1;
+}
+
+void mmu_trigger_guard_test(void)
+{
+    u64 guard_address = (u64)__stack_guard_start;
+    volatile u64 *guard = (volatile u64 *)guard_address;
+
+    if (!mmu_is_enabled())
+    {
+        panic("Guard-page test requires the MMU");
+    }
+
+    log_warn("Starting intentional guard-page write test");
+
+    mmu_guard_test_active = 1;
+    __asm__ volatile("" ::: "memory");
+
+    *guard = 0x50414E49434D4D55ULL;
+
+    mmu_guard_test_active = 0;
+
+    panic("Guard-page write unexpectedly succeeded");
+}
+
 void mmu_print_info(void)
 {
     log_info("Memory protection");
@@ -320,8 +365,8 @@ void mmu_print_info(void)
     log_info_pair("Stack guard page", "unmapped");
     log_info_pair("UART mapping", "device memory, RW, NX");
 
-    log_info_hex("Stack guard start", (u64)&__stack_guard_start);
-    log_info_hex("Stack guard end", (u64)&__stack_guard_end);
+    log_info_hex("Stack guard start", (u64)__stack_guard_start);
+    log_info_hex("Stack guard end", (u64)__stack_guard_end);
     log_info_hex("Page tables start", (u64)&__page_tables_start);
     log_info_hex("Page tables end", (u64)&__page_tables_end);
 }

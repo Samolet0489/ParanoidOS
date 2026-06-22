@@ -1366,3 +1366,20 @@ Security significance:
 This is the first real W^X memory-protection layer for ParanoidOS.
 It is QEMU-only and is an early foundation for capability enforcement,
 Sealed Mode, and Panic Mode.
+
+## Milestone 29 completed
+
+Proved that the MMU stack guard page actively blocks illegal writes.
+
+Test:
+- Added `guard-test` shell command
+- The command deliberately writes to the unmapped guard page
+- ARM64 raised a same-EL data abort
+- FAR_EL1 matched the guard-page start address
+- The exception handler recognized the expected fault
+- ParanoidOS halted with the message:
+  Guard-page protection test succeeded
+
+Security significance:
+The guard page is not only described in the MMU mapping. It actively prevents
+writes from silently overflowing the stack into nearby kernel memory.

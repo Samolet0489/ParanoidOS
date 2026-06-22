@@ -7,7 +7,7 @@ OBJCOPY = $(CROSS)objcopy
 BUILD_DIR = build
 TARGET_DIR = targets/qemu-virt-aarch64
 
-VERSION = 0.3.0
+VERSION = 0.3.1
 TARGET_NAME = qemu-virt-aarch64
 ARCH_NAME = aarch64
 BUILD_MODE = debug

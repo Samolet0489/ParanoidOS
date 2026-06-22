@@ -96,6 +96,7 @@ static void shell_help(void)
     uart_puts("  stack     - print stack information\n");
     uart_puts("  layout    - print kernel memory layout\n");
     uart_puts("  memory    - print runtime memory protection\n");
+    uart_puts("  guard-test - prove the stack guard page blocks writes\n");
     uart_puts("  build     - print build information\n");
     uart_puts("  config    - print boot configuration\n");
     uart_puts("  security  - print security profile and policy\n");
@@ -142,6 +143,12 @@ static void shell_execute(const char *command)
     if (k_strcmp(command, "memory") == 0)
     {
         mmu_print_info();
+        return;
+    }
+
+    if (k_strcmp(command, "guard-test") == 0)
+    {
+        mmu_trigger_guard_test();
         return;
     }
 
