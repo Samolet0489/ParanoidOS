@@ -1417,3 +1417,23 @@ This creates the first runtime capability model for ParanoidOS.
 Future communication and hardware drivers must require an explicit active
 capability before they may initialize or operate.
 
+
+## Milestone 31 completed
+
+Added a volatile Security Audit Ledger.
+
+Behavior:
+- Records boot into Sealed Mode.
+- Records capability grants.
+- Records capability expiry when capability checks detect an expired lease.
+- Records capability revocations and Sealed Mode restoration.
+- Records entry into Panic Mode.
+- Keeps a fixed-size in-memory history of the latest 12 events.
+- `audit` displays the log.
+- `audit-clear` clears the log.
+- Audit data is volatile and disappears on reboot.
+
+Security significance:
+The ledger makes temporary permissions visible and traceable.
+It supports the rule that capabilities must remain explicit, narrow,
+reviewable, and easy to revoke.

@@ -15,6 +15,7 @@
 #include <paranoid/timer.h>
 #include <paranoid/mmu.h>
 #include <paranoid/capability.h>
+#include <paranoid/audit.h>
 #include <paranoid/format.h>
 #include <paranoid/types.h>
 
@@ -145,6 +146,8 @@ static void shell_help(void)
     uart_puts("  timer     - print generic timer information\n");
     uart_puts("  uptime    - print time since kernel boot\n");
     uart_puts("  caps      - print active capability leases\n");
+    uart_puts("  audit     - print volatile security audit log\n");
+    uart_puts("  audit-clear - clear the volatile audit log\n");
     uart_puts("  grant-laptop - grant laptop link for 5 minutes\n");
     uart_puts("  grant-radio  - grant radio receive for 30 minutes\n");
     uart_puts("  seal      - revoke all temporary capabilities\n");
@@ -239,6 +242,19 @@ static void shell_execute(const char *command)
     if (k_strcmp(command, "uptime") == 0)
     {
         shell_print_uptime();
+        return;
+    }
+
+    if (k_strcmp(command, "audit") == 0)
+    {
+        audit_print();
+        return;
+    }
+
+    if (k_strcmp(command, "audit-clear") == 0)
+    {
+        audit_clear();
+        uart_puts("Security audit log cleared.\n");
         return;
     }
 

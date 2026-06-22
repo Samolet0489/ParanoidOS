@@ -6,6 +6,7 @@
 #include <paranoid/format.h>
 #include <paranoid/types.h>
 #include <paranoid/capability.h>
+#include <paranoid/audit.h>
 
 static void panic_puts(const char *text)
 {
@@ -55,7 +56,10 @@ static void panic_print_context(void)
 
 void panic(const char *message)
 {
-    u64 revoked = capability_seal();
+    u64 revoked;
+
+    audit_record("Panic Mode", "entered");
+    revoked = capability_seal();
     panic_puts("\n");
     panic_puts("================================\n");
     panic_puts("KERNEL PANIC\n");

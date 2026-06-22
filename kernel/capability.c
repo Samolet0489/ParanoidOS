@@ -1,6 +1,7 @@
 #include <paranoid/capability.h>
 #include <paranoid/timer.h>
 #include <paranoid/log.h>
+#include <paranoid/audit.h>
 #include <paranoid/types.h>
 
 static const char *capability_names[CAPABILITY_COUNT] =
@@ -41,6 +42,9 @@ static void capability_remove_expired(void)
         {
             capability_active[index] = 0;
             capability_expiry_seconds[index] = 0;
+            audit_record(
+                "Capability expired",
+                capability_name((capability_t)index));
         }
     }
 }
@@ -49,6 +53,8 @@ void capability_init(void)
 {
     u64 index;
 
+    audit_init();
+
     for (index = 0; index < CAPABILITY_COUNT; index++)
     {
         capability_active[index] = 0;
@@ -56,6 +62,7 @@ void capability_init(void)
     }
 
     capability_initialized = 1;
+    audit_record("Boot state", "Sealed Mode");
 }
 
 int capability_grant(capability_t capability, u64 duration_seconds)
@@ -75,6 +82,8 @@ int capability_grant(capability_t capability, u64 duration_seconds)
 
     capability_active[capability] = 1;
     capability_expiry_seconds[capability] = now + duration_seconds;
+
+    audit_record("Capability granted", capability_name(capability));
 
     return 1;
 }
@@ -133,11 +142,16 @@ u64 capability_seal(void)
         if (capability_active[index])
         {
             revoked++;
+            audit_record(
+                "Capability revoked",
+                capability_name((capability_t)index));
         }
 
         capability_active[index] = 0;
         capability_expiry_seconds[index] = 0;
     }
+
+    audit_record("Sealed Mode restored", "all capabilities denied");
 
     return revoked;
 }
