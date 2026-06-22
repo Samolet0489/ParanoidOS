@@ -16,6 +16,7 @@
 #include <paranoid/cpu_info.h>
 #include <paranoid/timer.h>
 #include <paranoid/mmu.h>
+#include <paranoid/capability.h>
 
 static void boot_run_self_tests(void)
 {
@@ -74,6 +75,16 @@ static void boot_setup_mmu(void)
     log_info("MMU memory protection enabled");
 }
 
+static void boot_setup_capabilities(void)
+{
+    boot_phase_set("sealed mode");
+
+    capability_init();
+
+    log_info("Capability engine initialized");
+    log_info("Sealed Mode active: all capabilities denied");
+}
+
 static void boot_print_system_info(void)
 {
     boot_phase_set("boot info");
@@ -105,7 +116,7 @@ void boot_run(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 29: guard-page fault proof loaded");
+    log_info("Milestone 30: sealed mode capability leases loaded");
 
     boot_phase_print();
 
@@ -130,6 +141,7 @@ void boot_run(void)
     boot_setup_exceptions();
     boot_setup_timer();
     boot_setup_mmu();
+    boot_setup_capabilities();
     boot_print_system_info();
     boot_run_checks();
     boot_enter_shell();

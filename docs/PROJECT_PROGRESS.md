@@ -1383,3 +1383,36 @@ Test:
 Security significance:
 The guard page is not only described in the MMU mapping. It actively prevents
 writes from silently overflowing the stack into nearby kernel memory.
+
+## Milestone 30 completed
+
+Added Sealed Mode and temporary capability leases.
+
+Behavior:
+- Every boot starts in Sealed Mode.
+- All capabilities are denied by default.
+- Capability grants exist only in RAM.
+- Temporary grants disappear after reboot.
+- `seal` revokes all active leases immediately.
+- `shutdown` revokes all leases before halting.
+- `panic` enters Panic Mode and revokes all active leases before halting.
+
+Initial capability placeholders:
+- Laptop link
+- Radio receive
+- USB data
+- Wi-Fi
+- Bluetooth
+- Modem
+
+Verified in QEMU:
+- Boot started sealed.
+- Laptop and radio leases could be granted.
+- `seal` revoked two active leases.
+- Reboot returned to fully sealed state.
+- `panic` revoked two active leases before halting.
+
+Security significance:
+This creates the first runtime capability model for ParanoidOS.
+Future communication and hardware drivers must require an explicit active
+capability before they may initialize or operate.

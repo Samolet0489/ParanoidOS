@@ -5,6 +5,7 @@
 #include <paranoid/kernel_layout.h>
 #include <paranoid/format.h>
 #include <paranoid/types.h>
+#include <paranoid/capability.h>
 
 static void panic_puts(const char *text)
 {
@@ -54,10 +55,14 @@ static void panic_print_context(void)
 
 void panic(const char *message)
 {
+    u64 revoked = capability_seal();
     panic_puts("\n");
     panic_puts("================================\n");
     panic_puts("KERNEL PANIC\n");
     panic_puts("================================\n");
+
+    panic_puts("Panic Mode: temporary capabilities revoked\n");
+    panic_print_dec("Revoked capability leases", revoked);
 
     panic_print_context();
 

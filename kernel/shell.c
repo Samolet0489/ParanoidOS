@@ -14,6 +14,7 @@
 #include <paranoid/boot_check.h>
 #include <paranoid/timer.h>
 #include <paranoid/mmu.h>
+#include <paranoid/capability.h>
 #include <paranoid/format.h>
 #include <paranoid/types.h>
 
@@ -51,6 +52,45 @@ static void shell_print_uptime(void)
     uart_putc('0' + ((milliseconds / 10) % 10));
     uart_putc('0' + (milliseconds % 10));
     uart_puts(" seconds\n");
+}
+
+static void shell_grant_capability(capability_t capability, u64 duration_seconds)
+{
+    if (!capability_grant(capability, duration_seconds))
+    {
+        uart_puts("Capability grant failed.\n");
+        return;
+    }
+
+    uart_puts("Capability granted: ");
+    uart_puts(capability_name(capability));
+    uart_puts("\n");
+
+    shell_print_u64_line(
+        "Lease duration: ",
+        duration_seconds,
+        " seconds");
+}
+
+static void shell_enter_sealed_mode(void)
+{
+    u64 revoked = capability_seal();
+
+    shell_print_u64_line("Revoked capability leases: ", revoked, "");
+    uart_puts("Sealed Mode restored.\n");
+}
+
+static void shell_shutdown(void)
+{
+    shell_enter_sealed_mode();
+
+    uart_puts("Kernel halted in Sealed Mode.\n");
+    uart_puts("Exit QEMU with Ctrl+A, then X.\n");
+
+    while (1)
+    {
+        __asm__ volatile("wfe");
+    }
 }
 
 static void shell_read_line(char *buffer, u64 size)
@@ -104,7 +144,12 @@ static void shell_help(void)
     uart_puts("  checks    - run structured boot checks\n");
     uart_puts("  timer     - print generic timer information\n");
     uart_puts("  uptime    - print time since kernel boot\n");
-    uart_puts("  panic     - trigger a manual kernel panic\n");
+    uart_puts("  caps      - print active capability leases\n");
+    uart_puts("  grant-laptop - grant laptop link for 5 minutes\n");
+    uart_puts("  grant-radio  - grant radio receive for 30 minutes\n");
+    uart_puts("  seal      - revoke all temporary capabilities\n");
+    uart_puts("  shutdown  - seal state and halt the kernel\n");
+    uart_puts("  panic     - enter Panic Mode and halt\n");
     uart_puts("  clear     - clear terminal\n");
 }
 
@@ -168,6 +213,7 @@ static void shell_execute(const char *command)
     {
         security_print_info();
         security_policy_print_report();
+        capability_print_status();
         return;
     }
 
@@ -193,6 +239,36 @@ static void shell_execute(const char *command)
     if (k_strcmp(command, "uptime") == 0)
     {
         shell_print_uptime();
+        return;
+    }
+
+    if (k_strcmp(command, "caps") == 0)
+    {
+        capability_print_status();
+        return;
+    }
+
+    if (k_strcmp(command, "grant-laptop") == 0)
+    {
+        shell_grant_capability(CAPABILITY_LAPTOP_LINK, 300);
+        return;
+    }
+
+    if (k_strcmp(command, "grant-radio") == 0)
+    {
+        shell_grant_capability(CAPABILITY_RADIO_RECEIVE, 1800);
+        return;
+    }
+
+    if (k_strcmp(command, "seal") == 0)
+    {
+        shell_enter_sealed_mode();
+        return;
+    }
+
+    if (k_strcmp(command, "shutdown") == 0)
+    {
+        shell_shutdown();
         return;
     }
 
