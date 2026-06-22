@@ -12,6 +12,8 @@
 #include <paranoid/security_policy.h>
 #include <paranoid/boot_phase.h>
 #include <paranoid/boot_check.h>
+#include <paranoid/timer.h>
+#include <paranoid/format.h>
 #include <paranoid/types.h>
 
 #define SHELL_BUFFER_SIZE 80
@@ -19,6 +21,35 @@
 static void shell_print_prompt(void)
 {
     uart_puts("\nparanoid> ");
+}
+
+static void shell_print_u64_line(const char *label, u64 value, const char *suffix)
+{
+    char number[21];
+
+    k_u64_to_dec(value, number);
+
+    uart_puts(label);
+    uart_puts(number);
+    uart_puts(suffix);
+    uart_puts("\n");
+}
+
+static void shell_print_uptime(void)
+{
+    char seconds_text[21];
+    u64 seconds = timer_uptime_seconds();
+    u64 milliseconds = timer_uptime_milliseconds();
+
+    k_u64_to_dec(seconds, seconds_text);
+
+    uart_puts("Uptime: ");
+    uart_puts(seconds_text);
+    uart_puts(".");
+    uart_putc('0' + (milliseconds / 100));
+    uart_putc('0' + ((milliseconds / 10) % 10));
+    uart_putc('0' + (milliseconds % 10));
+    uart_puts(" seconds\n");
 }
 
 static void shell_read_line(char *buffer, u64 size)
@@ -68,6 +99,8 @@ static void shell_help(void)
     uart_puts("  security  - print security profile and policy\n");
     uart_puts("  phase     - print current boot phase\n");
     uart_puts("  checks    - run structured boot checks\n");
+    uart_puts("  timer     - print generic timer information\n");
+    uart_puts("  uptime    - print time since kernel boot\n");
     uart_puts("  panic     - trigger a manual kernel panic\n");
     uart_puts("  clear     - clear terminal\n");
 }
@@ -132,6 +165,19 @@ static void shell_execute(const char *command)
     if (k_strcmp(command, "checks") == 0)
     {
         boot_check_run_all();
+        return;
+    }
+
+    if (k_strcmp(command, "timer") == 0)
+    {
+        shell_print_u64_line("Timer frequency: ", timer_frequency(), " Hz");
+        shell_print_u64_line("Timer ticks: ", timer_ticks(), "");
+        return;
+    }
+
+    if (k_strcmp(command, "uptime") == 0)
+    {
+        shell_print_uptime();
         return;
     }
 
