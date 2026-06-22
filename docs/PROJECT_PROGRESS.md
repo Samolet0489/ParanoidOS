@@ -1340,3 +1340,29 @@ Safety status:
 
 Next phone recon step:
 Find and download the matching stock firmware package for SM-A326B / BGL / A326BXXSECYB5, then unpack it offline and inspect boot.img, recovery.img, vbmeta.img, dtbo.img, super.img, and related files without flashing.
+
+## Milestone 28 completed
+
+Enabled the first runtime MMU memory-protection layer in QEMU.
+
+Runtime mappings:
+- Kernel code: read + execute
+- Read-only data: read-only + non-executable
+- Data and BSS: read + write + non-executable
+- Kernel stack: read + write + non-executable
+- Guard page below the stack: unmapped
+- QEMU UART: device memory, read + write + non-executable
+
+Implementation:
+- Added kernel/mmu.c and include/paranoid/mmu.h
+- Moved stack allocation from boot assembly to the linker layout
+- Added a full unmapped 4 KiB guard page below the stack
+- Added aligned MMU page tables
+- Enabled EL1 identity-mapped translation with 4 KiB pages
+- Added `memory` shell command
+- Replaced the former “Memory protection: unavailable” boot warning
+
+Security significance:
+This is the first real W^X memory-protection layer for ParanoidOS.
+It is QEMU-only and is an early foundation for capability enforcement,
+Sealed Mode, and Panic Mode.

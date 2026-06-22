@@ -13,6 +13,7 @@
 #include <paranoid/boot_phase.h>
 #include <paranoid/boot_check.h>
 #include <paranoid/timer.h>
+#include <paranoid/mmu.h>
 #include <paranoid/format.h>
 #include <paranoid/types.h>
 
@@ -94,6 +95,7 @@ static void shell_help(void)
     uart_puts("  cpu       - print CPU information\n");
     uart_puts("  stack     - print stack information\n");
     uart_puts("  layout    - print kernel memory layout\n");
+    uart_puts("  memory    - print runtime memory protection\n");
     uart_puts("  build     - print build information\n");
     uart_puts("  config    - print boot configuration\n");
     uart_puts("  security  - print security profile and policy\n");
@@ -134,6 +136,12 @@ static void shell_execute(const char *command)
     if (k_strcmp(command, "layout") == 0)
     {
         kernel_layout_print_info();
+        return;
+    }
+
+    if (k_strcmp(command, "memory") == 0)
+    {
+        mmu_print_info();
         return;
     }
 

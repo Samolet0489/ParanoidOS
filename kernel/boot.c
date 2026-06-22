@@ -15,6 +15,7 @@
 #include <paranoid/kernel_layout.h>
 #include <paranoid/cpu_info.h>
 #include <paranoid/timer.h>
+#include <paranoid/mmu.h>
 
 static void boot_run_self_tests(void)
 {
@@ -61,6 +62,18 @@ static void boot_setup_timer(void)
     log_info("Generic timer initialized");
 }
 
+static void boot_setup_mmu(void)
+{
+    boot_phase_set("memory protection");
+
+    if (!mmu_init())
+    {
+        panic("MMU setup failed");
+    }
+
+    log_info("MMU memory protection enabled");
+}
+
 static void boot_print_system_info(void)
 {
     boot_phase_set("boot info");
@@ -92,7 +105,7 @@ void boot_run(void)
 
     log_info("ParanoidOS booted");
     log_info("Security mode: paranoid learning build");
-    log_info("Milestone 27: generic timer uptime loaded");
+    log_info("Milestone 28: MMU W^X memory protection loaded");
 
     boot_phase_print();
 
@@ -116,6 +129,7 @@ void boot_run(void)
     boot_setup_stack();
     boot_setup_exceptions();
     boot_setup_timer();
+    boot_setup_mmu();
     boot_print_system_info();
     boot_run_checks();
     boot_enter_shell();

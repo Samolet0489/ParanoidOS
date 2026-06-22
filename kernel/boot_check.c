@@ -2,6 +2,7 @@
 #include <paranoid/log.h>
 #include <paranoid/panic.h>
 #include <paranoid/config.h>
+#include <paranoid/mmu.h>
 
 void boot_check_report(const char *name, const char *status, boot_check_severity_t severity)
 {
@@ -26,7 +27,21 @@ void boot_check_run_all(void)
     log_info("Structured boot checks");
 
     boot_check_report("Scheduler", "unavailable", BOOT_CHECK_WARN);
-    boot_check_report("Memory protection", "unavailable", BOOT_CHECK_WARN);
+
+    if (mmu_is_enabled())
+    {
+        boot_check_report(
+            "Memory protection",
+            "active: MMU W^X mappings",
+            BOOT_CHECK_INFO);
+    }
+    else
+    {
+        boot_check_report(
+            "Memory protection",
+            "unavailable",
+            BOOT_CHECK_WARN);
+    }
 
     if (config_network_enabled())
     {

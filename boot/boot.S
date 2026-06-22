@@ -1,13 +1,11 @@
 .section .text.boot
 .global _start
-.global stack_bottom
-.global stack_top
 
 _start:
     ldr x0, =stack_top
     mov sp, x0
 
-    bl clear_bss
+    bl clear_runtime_memory
 
     bl kernel_main
 
@@ -15,22 +13,16 @@ hang:
     wfe
     b hang
 
-clear_bss:
+clear_runtime_memory:
     ldr x0, =__bss_start
-    ldr x1, =__bss_end
+    ldr x1, =__runtime_zero_end
 
-clear_bss_loop:
+clear_runtime_memory_loop:
     cmp x0, x1
-    b.ge clear_bss_done
+    b.ge clear_runtime_memory_done
 
     str xzr, [x0], #8
-    b clear_bss_loop
+    b clear_runtime_memory_loop
 
-clear_bss_done:
+clear_runtime_memory_done:
     ret
-
-.section .bss.stack
-.align 12
-stack_bottom:
-    .skip 4096
-stack_top:
